@@ -1,0 +1,108 @@
+<?xml version='1.0' encoding='UTF-8'?>
+<mardyn version="20100525" >
+	<loglevel>INFO</loglevel>
+	<refunits type="SI" >
+		<length unit="nm">0.1</length>
+		<mass unit="u">1</mass>
+		<energy unit="K">1</energy>
+	</refunits>
+
+	<simulation type="MD" >
+		<integrator type="Leapfrog" >
+			<timestep unit="reduced" >0.00182367</timestep>
+		</integrator>
+
+		<run>
+			<currenttime>0.0</currenttime> 
+			<production>
+				<steps>10000</steps>
+			</production>
+		</run>
+
+		<ensemble type="NVT">
+			<!-- Nparticles determined by the input file -->
+			<temperature unit="reduced" >110</temperature>
+			<domain type="box">
+				<lx>100</lx>
+				<ly>200</ly>
+				<lz>200</lz>
+			</domain>
+
+			<components>
+				<include query="/components/moleculetype" >../../components.xml</include>
+				<include query="/mixing">../../mixing_2c.xml</include>
+			</components>
+
+			<phasespacepoint>
+				<generator name="MultiObjectGenerator">
+					<objectgenerator>
+						<filler type="GridFiller">
+							<lattice system="cubic" centering="face">
+								<vec id="a"> <x>1</x> <y>0</y> <z>0</z> </vec>
+								<vec id="b"> <x>0</x> <y>1</y> <z>0</z> </vec>
+								<vec id="c"> <x>0</x> <y>0</y> <z>1</z> </vec>
+							</lattice>
+							<basis>
+								<site>
+									<componentid>0</componentid>
+									<coordinate> <x>0.5</x> <y>0.5</y> <z>0.5</z> </coordinate>
+								</site>
+							</basis>
+							<latticeOccupancy>1</latticeOccupancy>
+							<density>0.000497</density>
+						</filler>
+						<object type="Cuboid">
+							<lower> <x>0</x> <y>0</y> <z>0</z> </lower>
+							<upper> <x>100</x> <y>200</y> <z>200</z> </upper>
+						</object>
+	<!--                <velocityAssigner type="MaxwellVelocityDistribution"></velocityAssigner>-->
+						<velocityAssigner type="EqualVelocityDistribution" enableRandomSeed="false"></velocityAssigner>
+					</objectgenerator>
+				</generator>
+			</phasespacepoint>
+		</ensemble>
+
+		<algorithm>
+			<parallelisation type="DomainDecomposition"></parallelisation>
+<!--
+			<parallelisation type="KDDecomposition">
+				<CommunicationScheme>direct</CommunicationScheme>
+				<updateFrequency>100000</updateFrequency>
+				<fullSearchThreshold>3</fullSearchThreshold>
+				<splitBiggestDimension>false</splitBiggestDimension>
+				<useVectorizationTuner>false</useVectorizationTuner>
+				<generateNewFiles>false</generateNewFiles>
+				<useExistingFiles>false</useExistingFiles>
+			</parallelisation>
+-->
+<!--			<datastructure type="LinkedCells">
+				<cellsInCutoffRadius>1</cellsInCutoffRadius>
+			</datastructure>-->
+<datastructure type="AutoPas">
+       <allowedContainers>linkedCells</allowedContainers>
+       <allowedTraversals>sli</allowedTraversals>
+       <dataLayout>SoA</dataLayout>
+       <newton3>enabled</newton3>
+       <skin>0.67</skin>
+                        </datastructure>
+
+			<cutoffs type="CenterOfMass" >
+			<defaultCutoff unit="reduced" >8.479</defaultCutoff>
+				<radiusLJ unit="reduced" >8.479</radiusLJ>
+			</cutoffs>
+			<electrostatic type="ReactionField" >
+				<epsilon>1.0e+10</epsilon>
+			</electrostatic>
+		</algorithm>
+
+		<output>
+			<outputplugin name="CheckpointWriter">
+				<type>binary</type>
+				<writefrequency>10000</writefrequency>
+				<outputprefix>cp_binary_genVap</outputprefix>
+			</outputplugin>
+
+		</output>	
+	</simulation>
+
+</mardyn>
