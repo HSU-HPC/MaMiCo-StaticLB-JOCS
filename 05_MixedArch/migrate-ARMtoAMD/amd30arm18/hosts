@@ -1,0 +1,5 @@
+#arm00 max-slots=1
+amd03 max-slots=30
+arm07 max-slots=18
+#arm01 max-slots=1
+
